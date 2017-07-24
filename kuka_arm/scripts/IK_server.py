@@ -150,17 +150,28 @@ def handle_calculate_IK(req):
 	    wc_z = d7*(cos(pitch)*cos(roll))
 
             # Calculate theta1 for joint 1
-            theta1 = atan2(wc_y, wc_x)
+
+            r2d = 180/pi
+            d2r = pi/180
+            theta1 = atan2(wc_y, wc_x)*r2d
 
             # Calculate theta2
             k1 = wc_z - d1
             k2 = sqrt(wc_x*wc_x+wc_y*wc_y)-a1
-            theta2_plus = (k1*k1+a2*a2-d4*d4)/(2*a2)*sqrt(k1*k1+k2*k2)
-            plus = atan2(k2,k1)
+            theta2_plus = (k1*k1+a2*a2-d4*d4)/(2*a2)*sqrt(k1*k1+k2*k2)*r2d
+            plus = atan2(k2,k1)*r2d
             theta2 = theta2_plus - plus
 
             # Calculate theta3
-            theta3 = atan2(k1-a2*sin(theta2),k2-a2*cos(theta2))
+            theta3 = atan2(k1-a2*sin(theta2),k2-a2*cos(theta2))*r2d
+
+            # Calculate q1, q2 and q3 from theta1, theta2, theta3
+            q1 = theta1
+            q2 = theta2 - 90
+            q3 = theta3 - theta2
+
+            # Calculate T0_3 based on the q1, q2, q3
+            T0_3 = simplify(T0_1*T1_2*T2_3)
 
 
 
